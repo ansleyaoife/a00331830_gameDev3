@@ -1,0 +1,93 @@
+using NUnit.Framework;
+using UnityEngine;
+
+public class ChillaStats : MonoBehaviour
+{
+
+    //Stats
+    [Range(0, 100)] public float hunger = 80f;
+    [Range(0, 100)] public float energy = 80f;
+    [Range(0, 100)] public float cleanliness = 80f;
+    [Range(0, 100)] public float happiness = 80f;
+
+    //Decay per in game hour
+    public float hungerDecay = 4f;
+    public float energyDecay = 3f;
+    public float cleanlinessDecay = 2f;
+    public float happinessDecay = 1.5f;
+
+    public bool isSleeping {  get; private set; }
+
+    private float lastTimeOfDay;
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        lastTimeOfDay = WorldTime.Instance != null ? WorldTime.Instance.TimeOfDay : 0f;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (WorldTime.Instance == null) return;
+
+        float current = WorldTime.Instance.TimeOfDay;
+        
+        float hoursPassed = current - lastTimeOfDay;
+        
+        if (hoursPassed < 0) hoursPassed += 24f;
+        
+        lastTimeOfDay = current;
+
+        if (hoursPassed <= 0f || hoursPassed > 12f) return;
+
+        Decay(hoursPassed);
+    }
+
+    void Decay(float hours)
+    {
+        hunger = Mathf.Max(0f, hunger - hungerDecay * hours);
+        cleanliness = Mathf.Max(0f, cleanliness - cleanlinessDecay * hours);
+
+        if(IsSleeping)
+        {
+            energy = Mathf.Min(100f, energy + 15f * hours);
+        }
+        else
+        {
+            energy = Mathf.Max(0f, energy - energyDecay * hours);
+        }
+
+        //speed up happiness decay with low needs
+        float penalty = 1f;
+
+        if (hunger < 30f) penalty += 0.5f;
+        
+        if (cleanliness < 30f) penalty += 0.5f;
+
+        if (energy < 30f) penalty += 0.5f;
+
+        happiness = Mathf.Max(0f, happiness - happinessDecay * hours * penalty);
+
+    }
+
+    public void Feed()
+    {
+        //Todo
+    }
+
+    public void Clean()
+    {
+        //Todo
+    }
+
+    public void Play()
+    {
+        //Todo
+    }
+
+    public void ToggleSleep()
+    {
+        //Todo
+    }
+}
