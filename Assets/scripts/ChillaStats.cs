@@ -1,14 +1,13 @@
-using NUnit.Framework;
 using UnityEngine;
 
 public class ChillaStats : MonoBehaviour
 {
 
     //Stats
-    [Range(0, 100)] public float hunger = 80f;
-    [Range(0, 100)] public float energy = 80f;
-    [Range(0, 100)] public float cleanliness = 80f;
-    [Range(0, 100)] public float happiness = 80f;
+    [UnityEngine.Range(0, 100)] public float hunger = 80f;
+    [UnityEngine.Range(0, 100)] public float energy = 80f;
+    [UnityEngine.Range(0, 100)] public float cleanliness = 80f;
+    [UnityEngine.Range(0, 100)] public float happiness = 80f;
 
     //Decay per in game hour
     public float hungerDecay = 4f;
@@ -16,7 +15,7 @@ public class ChillaStats : MonoBehaviour
     public float cleanlinessDecay = 2f;
     public float happinessDecay = 1.5f;
 
-    public bool isSleeping {  get; private set; }
+    public bool IsSleeping {  get; private set; }
 
     private float lastTimeOfDay;
 
@@ -73,21 +72,33 @@ public class ChillaStats : MonoBehaviour
 
     public void Feed()
     {
-        //Todo
+        hunger = Mathf.Min(100f, hunger + 40f);
+
+        happiness = Mathf.Min(100f, happiness + 5f);
     }
 
     public void Clean()
     {
-        //Todo
+        cleanliness = Mathf.Min(100f, cleanliness + 50f);
+
+        happiness = Mathf.Min(100f, happiness + 5f);
     }
 
     public void Play()
     {
-        //Todo
+        //too tired to play?
+        if (energy < 10f)
+        {
+            return;
+        }
+
+        happiness = Mathf.Min(100f, happiness + 30f);
+
+        energy = Mathf.Max(0f, energy - 10f);
     }
 
     public void ToggleSleep()
     {
-        //Todo
+        IsSleeping = !IsSleeping;
     }
 }
