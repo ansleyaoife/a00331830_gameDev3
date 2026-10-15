@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
 
 public class ChillaStats : MonoBehaviour
 {
@@ -40,6 +41,21 @@ public class ChillaStats : MonoBehaviour
 
         if (hoursPassed <= 0f || hoursPassed > 12f) return;
 
+        //go to sleep at 8pm
+        if (WorldTime.Instance.IsNight && !IsSleeping)
+        {
+            if (WorldTime.Instance.TimeOfDay >= 20f || WorldTime.Instance.TimeOfDay < 6f)
+            {
+                SetSleeping(true);
+            }
+        }
+
+        //wake up at 6am
+        if (!WorldTime.Instance.IsNight && IsSleeping)
+        {
+            SetSleeping(false);
+        }
+
         Decay(hoursPassed);
     }
 
@@ -56,6 +72,13 @@ public class ChillaStats : MonoBehaviour
         {
             energy = Mathf.Max(0f, energy - energyDecay * hours);
         }
+
+        float nightMultiplier = WorldTime.Instance.IsNight ? 0.5f : 1f;
+
+        hunger = Mathf.Max(0f, hunger - hungerDecay * hours * nightMultiplier);
+
+        cleanliness = Mathf.Max(0f, cleanliness - cleanlinessDecay * hours * nightMultiplier);
+
 
         //speed up happiness decay with low needs
         float penalty = 1f;
@@ -95,6 +118,11 @@ public class ChillaStats : MonoBehaviour
         happiness = Mathf.Min(100f, happiness + 30f);
 
         energy = Mathf.Max(0f, energy - 10f);
+    }
+
+    public void SetSleeping(bool sleeping)
+    {
+        IsSleeping = sleeping;
     }
 
     public void ToggleSleep()

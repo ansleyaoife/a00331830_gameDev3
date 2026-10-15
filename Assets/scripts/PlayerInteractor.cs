@@ -44,7 +44,7 @@ public class PlayerInteractor : MonoBehaviour
 
     void Interact(GameObject obj)
     {
-        //Is it Food?
+        //is it Food?
         FoodPickup food = obj.GetComponentInParent<FoodPickup>();
 
         if (food != null)
@@ -53,7 +53,15 @@ public class PlayerInteractor : MonoBehaviour
             return;
         }
 
-        //Is it a Chilla?
+        //is it a crop plot?
+        CropPlot plot = obj.GetComponentInParent<CropPlot>();
+        if (plot != null)
+        {
+            plot.Interact();
+            return;
+        }
+
+        //is it a Chilla?
         ChillaStats chilla = obj.GetComponentInParent<ChillaStats>();
 
         if (chilla != null)
@@ -70,6 +78,8 @@ public class PlayerInteractor : MonoBehaviour
         if (ChillaUI.Instance.panel.activeSelf) return;
 
         string prompt = null;
+
+        //todo
 
         if (hovered.GetComponentInParent<ChillaStats>() != null) prompt = "Click to inspect";
 
