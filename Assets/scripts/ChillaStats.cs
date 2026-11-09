@@ -11,10 +11,10 @@ public class ChillaStats : MonoBehaviour
     [UnityEngine.Range(0, 100)] public float happiness = 80f;
 
     //Decay per in game hour
-    public float hungerDecay = 4f;
-    public float energyDecay = 3f;
-    public float cleanlinessDecay = 2f;
-    public float happinessDecay = 1.5f;
+    public float hungerDecay = 2f;
+    public float energyDecay = 1.5f;
+    public float cleanlinessDecay = 1f;
+    public float happinessDecay = 0.75f;
 
     public bool IsSleeping {  get; private set; }
 
@@ -61,10 +61,14 @@ public class ChillaStats : MonoBehaviour
 
     void Decay(float hours)
     {
-        hunger = Mathf.Max(0f, hunger - hungerDecay * hours);
-        cleanliness = Mathf.Max(0f, cleanliness - cleanlinessDecay * hours);
+        // night multiplier
+        float nightMultiplier = WorldTime.Instance.IsNight ? 0.5f : 1f;
 
-        if(IsSleeping)
+        // decay stats
+        hunger = Mathf.Max(0f, hunger - hungerDecay * hours * nightMultiplier);
+        cleanliness = Mathf.Max(0f, cleanliness - cleanlinessDecay * hours * nightMultiplier);
+
+        if (IsSleeping)
         {
             energy = Mathf.Min(100f, energy + 15f * hours);
         }
@@ -73,20 +77,11 @@ public class ChillaStats : MonoBehaviour
             energy = Mathf.Max(0f, energy - energyDecay * hours);
         }
 
-        float nightMultiplier = WorldTime.Instance.IsNight ? 0.5f : 1f;
-
-        hunger = Mathf.Max(0f, hunger - hungerDecay * hours * nightMultiplier);
-
-        cleanliness = Mathf.Max(0f, cleanliness - cleanlinessDecay * hours * nightMultiplier);
-
-
-        //speed up happiness decay with low needs
+        // happiness decay speeds up with low needs
         float penalty = 1f;
 
         if (hunger < 30f) penalty += 0.5f;
-        
         if (cleanliness < 30f) penalty += 0.5f;
-
         if (energy < 30f) penalty += 0.5f;
 
         happiness = Mathf.Max(0f, happiness - happinessDecay * hours * penalty);

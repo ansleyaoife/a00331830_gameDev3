@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.EventSystems;
 public class PlayerInventory : MonoBehaviour
 {
     public static PlayerInventory Instance;

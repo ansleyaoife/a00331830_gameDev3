@@ -79,10 +79,16 @@ public class PlayerInteractor : MonoBehaviour
 
         string prompt = null;
 
-        //todo
+        FoodPickup food = hovered.GetComponentInParent<FoodPickup>();
+        if (food != null) prompt = "Click to pick up food";
 
-        if (hovered.GetComponentInParent<ChillaStats>() != null) prompt = "Click to inspect";
+        CropPlot plot = hovered.GetComponentInParent<CropPlot>();
+        if (plot != null) prompt = plot.GetPrompt();
 
-        if (prompt != null) GUI.Label(new Rect(Screen.width / 2 - 60, Screen.height / 2 + 40, 200, 30), prompt);
+        ChillaStats chilla = hovered.GetComponentInParent<ChillaStats>();
+        if (chilla != null) prompt = "Click to check on Chilla";
+
+        if (prompt != null)
+            GUI.Label(new Rect(Screen.width / 2 - 60, Screen.height / 2 + 40, 200, 30), prompt);
     }
 }

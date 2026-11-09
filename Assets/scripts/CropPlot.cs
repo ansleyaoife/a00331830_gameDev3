@@ -45,20 +45,21 @@ public class CropPlot : MonoBehaviour
                 float scale = Mathf.Lerp(0.1f, 1f, Mathf.Clamp01(growthProgress));
                 plantVisual.localScale = Vector3.one * scale;
             }
+
+            if (growthProgress >= 1f)
+            {
+                growthProgress = 1f;
+                state = PlotState.Ready;
+            }
         }
 
-        if (growthProgress >= 1f)
-        {
-            growthProgress = 1f;
-            state = PlotState.Ready;
-        }
         if (soilRenderer != null)
         {
-            soilRenderer.material.color = IsWatered ? wetColour : wetColour;
+            soilRenderer.material.color = IsWatered ? wetColour : dryColour;
         }
     }
 
-    public void Interact(GameObject obj)
+    public void Interact()
     {
         switch (state)
         {
@@ -105,11 +106,11 @@ public class CropPlot : MonoBehaviour
         if(PlayerInventory.Instance != null)
         {
             PlayerInventory.Instance.AddFood(harvestYield);
-
-            state = PlotState.Empty;
-            growthProgress = 0f;
-            waterTimer = 0f;
         }
+
+        state = PlotState.Empty;
+        growthProgress = 0f;
+        waterTimer = 0f;
 
         if (plantVisual != null)
         {
