@@ -29,7 +29,7 @@ public class ChillaStats : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (WorldTime.Instance == null) return;
+        if (WorldTime.Instance == null || WorldTime.Instance.IsPaused) return;
 
         float current = WorldTime.Instance.TimeOfDay;
         

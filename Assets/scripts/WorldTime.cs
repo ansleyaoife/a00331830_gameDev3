@@ -8,10 +8,16 @@ public class WorldTime : MonoBehaviour
     //Time
     [SerializeField] private float dayLengthSeconds = 120f;
     [SerializeField] private float startHour = 8f;
+    [SerializeField] private float bedtimeHour = 12f;
+    [SerializeField] private float wakeUpHour = 8f;
 
     public int Day { get; private set; } = 1;
     public float TimeOfDay { get; private set; }
+    public bool IsPaused { get; private set; } = false;
+    public bool IsNight => TimeOfDay < 6f || TimeOfDay < 6f || TimeOfDay >= 20f;
+
     public event System.Action OnNewDay;
+    public event System.Action OnBedtime;
 
     void Awake()
     {
@@ -28,16 +34,30 @@ public class WorldTime : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (IsPaused) return;
+
         float hoursPerSecond = 24f / dayLengthSeconds;
         TimeOfDay += hoursPerSecond * Time.deltaTime;
 
-        if(TimeOfDay >= 24f)
+        // trigger bedtime
+        if (TimeOfDay >= bedtimeHour)
         {
-            TimeOfDay -= 24f;
-            Day++;
-            OnNewDay ?.Invoke();
+            TimeOfDay = bedtimeHour;
+            PauseTime();
+            OnBedtime?.Invoke();
         }
     }
 
-    public bool IsNight => TimeOfDay < 6f || TimeOfDay >= 20f;
+    public void PauseTime()
+    {
+        IsPaused = true;
+    }
+
+    public void SkipToMorning()
+    {
+        TimeOfDay = wakeUpHour;
+        Day++;
+        IsPaused = false;
+        OnNewDay?.Invoke();
+    }
 }

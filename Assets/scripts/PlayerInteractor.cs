@@ -55,6 +55,7 @@ public class PlayerInteractor : MonoBehaviour
 
         //is it a crop plot?
         CropPlot plot = obj.GetComponentInParent<CropPlot>();
+
         if (plot != null)
         {
             plot.Interact();
@@ -69,6 +70,15 @@ public class PlayerInteractor : MonoBehaviour
             ChillaUI.Instance.Open(chilla);
             return;
         }
+
+        // is it the bedroom?
+        Door door = obj.GetComponentInParent<Door>();
+
+        if (door != null) 
+        {
+            door.Interact();
+            return;
+        }
     }
 
     private void OnGUI()
@@ -80,15 +90,30 @@ public class PlayerInteractor : MonoBehaviour
         string prompt = null;
 
         FoodPickup food = hovered.GetComponentInParent<FoodPickup>();
-        if (food != null) prompt = "Click to pick up food";
-
+        if (food != null)
+        {
+            prompt = "Click to pick up food";
+        }
         CropPlot plot = hovered.GetComponentInParent<CropPlot>();
-        if (plot != null) prompt = plot.GetPrompt();
-
+        if (plot != null)
+        {
+            prompt = plot.GetPrompt();
+        }
         ChillaStats chilla = hovered.GetComponentInParent<ChillaStats>();
-        if (chilla != null) prompt = "Click to check on Chilla";
+        if (chilla != null) 
+        { 
+            prompt = "Click to check on Chilla"; 
+        }
+
+        Door door = hovered.GetComponentInParent<Door>();
+        if (door != null) 
+        { 
+            prompt = door.GetPrompt(); 
+        }
 
         if (prompt != null)
+        {
             GUI.Label(new Rect(Screen.width / 2 - 60, Screen.height / 2 + 40, 200, 30), prompt);
+        }
     }
 }

@@ -31,6 +31,8 @@ public class CropPlot : MonoBehaviour
 
     void Update()
     {
+        if (WorldTime.Instance != null && WorldTime.Instance.IsPaused) return;
+
         if (waterTimer > 0f)
         {
             waterTimer -= Time.deltaTime;
